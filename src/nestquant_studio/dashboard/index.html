@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NestQuant Studio</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>NestQuant Studio</h1>
+          <p class="sub">Research operating system · activity monitor</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span id="freshness" class="freshness">—</span>
+        <button type="button" id="btn-refresh" class="btn">Refresh</button>
+      </div>
+    </header>
+
+    <section class="kpis" id="kpis" aria-label="Key metrics"></section>
+
+    <div class="grid">
+      <section class="panel" aria-labelledby="hyp-title">
+        <div class="panel-h">
+          <h2 id="hyp-title">Hypotheses</h2>
+          <span id="lock-badge" class="badge">lock —</span>
+        </div>
+        <div id="hyp-list" class="list"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="act-title">
+        <div class="panel-h">
+          <h2 id="act-title">Activity stream</h2>
+          <label class="filter">
+            <span class="sr">Filter</span>
+            <input id="act-filter" type="search" placeholder="Filter activity…" />
+          </label>
+        </div>
+        <div id="activity" class="activity"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="ladder-title">
+        <div class="panel-h">
+          <h2 id="ladder-title">Ladder runs</h2>
+        </div>
+        <div id="ladder" class="table-wrap"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="eng-title">
+        <div class="panel-h">
+          <h2 id="eng-title">Engineering</h2>
+        </div>
+        <div id="engineering" class="list"></div>
+      </section>
+
+      <section class="panel wide" aria-labelledby="comp-title">
+        <div class="panel-h">
+          <h2 id="comp-title">Strategy composites</h2>
+        </div>
+        <div id="composites" class="list"></div>
+      </section>
+    </div>
+
+    <footer class="foot">
+      <span>Studio ≠ NQTS · Deterministic lifecycle · Human approval gates</span>
+      <span id="err" class="err" hidden></span>
+    </footer>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

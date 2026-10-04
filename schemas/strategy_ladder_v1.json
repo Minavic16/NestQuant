@@ -1,0 +1,55 @@
+{
+  "ladder_id": "strategy_ladder_v1",
+  "research_type": "strategy",
+  "version": 1,
+  "levels": [
+    {
+      "level_id": "L0",
+      "name": "Sanity",
+      "eval_config_id": "strategy_l0_v1",
+      "budgets": {"max_candidates": 10000, "max_wall_seconds": 7200, "max_model_usd": 0},
+      "pass_rule": "all_invariants_ok_and_ran",
+      "kill_reasons_allowed": ["error", "constraint_violation", "duplicate"]
+    },
+    {
+      "level_id": "L1",
+      "name": "Cheap edge",
+      "eval_config_id": "strategy_l1_v1",
+      "budgets": {"max_candidates": 3000, "max_wall_seconds": 14400, "max_model_usd": 0},
+      "pass_rule": "thresholds_in_eval_config",
+      "kill_reasons_allowed": ["no_trades", "below_metric", "error"]
+    },
+    {
+      "level_id": "L2",
+      "name": "Robustness lite",
+      "eval_config_id": "strategy_l2_v1",
+      "budgets": {"max_candidates": 500, "max_wall_seconds": 21600, "max_model_usd": 0},
+      "pass_rule": "stability_score_threshold",
+      "kill_reasons_allowed": ["fragile", "below_metric", "error"]
+    },
+    {
+      "level_id": "L3",
+      "name": "Costs and constraints",
+      "eval_config_id": "strategy_l3_v1",
+      "budgets": {"max_candidates": 200, "max_wall_seconds": 21600, "max_model_usd": 0},
+      "pass_rule": "net_edge_after_costs",
+      "kill_reasons_allowed": ["uneconomic", "constraint_violation", "below_metric"]
+    },
+    {
+      "level_id": "L4",
+      "name": "Stress / regime slice",
+      "eval_config_id": "strategy_l4_v1",
+      "budgets": {"max_candidates": 100, "max_wall_seconds": 21600, "max_model_usd": 0},
+      "pass_rule": "not_single_regime_only_unless_flagged",
+      "kill_reasons_allowed": ["regime_brittle", "below_metric"]
+    },
+    {
+      "level_id": "L5",
+      "name": "Assessment pack",
+      "eval_config_id": "strategy_l5_v1",
+      "budgets": {"max_candidates": 30, "max_wall_seconds": 43200, "max_model_usd": 5},
+      "pass_rule": "assessment_inputs_complete",
+      "kill_reasons_allowed": ["error", "manual_kill"]
+    }
+  ]
+}
