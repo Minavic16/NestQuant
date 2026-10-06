@@ -1,0 +1,3 @@
+[workspace]
+members = ["risk-engine", "account-manager", "monitoring-daemon"]
+resolver = "2"

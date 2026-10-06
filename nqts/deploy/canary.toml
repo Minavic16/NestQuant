@@ -1,0 +1,13 @@
+# Canary rollout: route a percentage of accounts to the new strategy artifact.
+[[canary_steps]]
+accounts_pct = 10
+instruments = "canary-accounts-only"
+equity_guard_max_dd_pct = 1.0
+duration_minutes = 60
+
+[[canary_steps]]
+accounts_pct = 50
+duration_minutes = 240
+
+[[canary_steps]]
+accounts_pct = 100

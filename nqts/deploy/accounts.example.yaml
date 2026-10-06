@@ -1,0 +1,15 @@
+accounts:
+  - id: demo-1
+    broker: metatrader5
+    server: MetaQuotes-Demo
+    login: 111308298
+    leverage: 100
+    risk: { max_dd_pct: 5, max_open_trades: 1 }
+    canary: false
+  - id: canary-1
+    broker: metatrader5
+    server: MetaQuotes-Demo
+    login: 999999999
+    leverage: 100
+    risk: { max_dd_pct: 2, max_open_trades: 1 }
+    canary: true

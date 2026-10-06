@@ -1,0 +1,25 @@
+name: NQTS Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      slot: { description: "blue|green", required: false, default: "auto" }
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e ./nqts
+      - run: pytest nqts/tests/unit nqts/tests/smoke -q
+        env: { NESTQUANT_SKIP_LIVE_CHECK: "1", NESTQUANT_SKIP_DASHBOARD_CHECK: "1" }
+      - run: echo "build artifacts would be packaged here"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: false  # enable with a VPS runner + secrets
+    steps:
+      - run: echo "ssh to VPS, run nqts/deploy/blue_green.sh"
