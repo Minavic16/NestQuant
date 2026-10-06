@@ -1,48 +1,19 @@
-# GitHub push checklist (NestQuant Studio v0.1)
+# GitHub Push Notes (historical)
 
-Local commit ready: `01b6b7439b702cec61caa00e5b987250d7cd74b0` on `main`.
+> These are the notes from the original v0.1 push attempt. The canonical
+> NestQuant monorepo is `Minavic16/NestQuant` (renamed from
+> `NestQuant-Prod`, migrated from `Minavic16/that`).
 
-## Why push failed from PromptQL
+## What happened originally
 
-1. **Mutating GitHub API calls** (`POST /user/repos`, Contents write) require an **in-app Approve** in PromptQL. Approvals timed out (408).
-2. **GitHub App installations = 0** for this account via the integration. `git push` returned:
-   `Permission to Minavic16/NestQuant-Prod.git denied to Minavic16` (403).
-3. Existing `Minavic16/studio` is a **different** Next.js app — do not overwrite it.
-4. `Minavic16/NestQuant-Prod` is nearly empty but push still needs write permission via the PromptQL GitHub App / OAuth scopes.
+- Push failed because the PromptQL GitHub App had 0 installations, and the
+  PAT-based push returned 403 (`Permission denied`).
+- Those issues have since been resolved: the repo was renamed to
+  `NestQuant`, source was committed via the local git remote, and CI was added.
 
-## Fix (do this on GitHub + PromptQL)
+## Rules now
 
-### A. Install PromptQL GitHub App (required for reliable push)
-
-1. PromptQL → Data / Integrations → **GitHub** → Settings → **Manage installations**
-2. Install on **Minavic16** (user account)
-3. Grant access to either:
-   - **All repositories**, or
-   - Select: create `nestquant-studio` first, then grant it (and optionally `NestQuant-Prod`)
-
-### B. Create the empty repo (pick one)
-
-**Option 1 — you create in browser (fastest):**
-- https://github.com/new → name `nestquant-studio` → Public → **no** README/gitignore/license → Create
-
-**Option 2 — Approve bot modal:**
-- When NestQuant Bot requests `POST /user/repos` for `nestquant-studio`, click **Approve** within the timeout window
-
-### C. Re-trigger the bot
-
-Message: `@NestQuant Bot GitHub App installed and nestquant-studio repo is ready — push v0.1`
-
-### D. Manual push from a machine with your credentials (backup)
-
-```bash
-tar xzf nestquant-studio-v0.1.0.tar.gz && cd nestquant-studio
-git init  # if needed; or use the tarball without .git and:
-# prefer: clone empty repo then copy files
-git clone https://github.com/Minavic16/nestquant-studio.git
-# copy source in, then:
-git add -A
-git commit -m "feat: NestQuant Studio production-candidate v0.1"
-git push -u origin main
-```
-
-Or from the VM copy after App is installed (bot will do this).
+1. Never commit a saved page snapshot (the old `NestQuant-Studio [Codespaces]`
+   HTML is not source). Use `git clone --depth` for speed.
+2. Experiments belong in `studio/`; NQTS runtime belongs in `nqts/`.
+3. CI (`.github/workflows/ci.yml`) must stay green: Studio tests + NQTS unit/smoke.

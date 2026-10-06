@@ -9,7 +9,7 @@ from nestquant_studio.core.hashutil import sha256_json
 from nestquant_studio.core.ids import new_id
 from nestquant_studio.core.search_space import SearchSpace
 from nestquant_studio.db.repo import Repository
-from nestquant_studio.engine.eval_adapter import ToyParamEvalAdapter
+from nestquant_studio.engine.eval_adapter import DeterministicBacktestAdapter
 from nestquant_studio.engine.ladder_runner import LadderRunner
 
 LADDER_PATH = Path(__file__).resolve().parents[3] / "schemas" / "strategy_ladder_v1.json"
@@ -158,7 +158,7 @@ class ResearchService:
             raise KeyError(hypothesis_id)
         if hyp["status"] == "low_cost_filter":
             self.repo.transition_hypothesis(hypothesis_id, "in_ladder", actor=actor)
-        adapter = ToyParamEvalAdapter(eval_configs or DEFAULT_EVAL_CONFIGS)
+        adapter = DeterministicBacktestAdapter(eval_configs or DEFAULT_EVAL_CONFIGS)
         runner = LadderRunner(self.repo, adapter)
         ordered = [lv["level_id"] for lv in ladder["levels"]]
         if through_level not in ordered:

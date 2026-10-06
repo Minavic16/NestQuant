@@ -1,11 +1,12 @@
 # Contracts
 
-Language-neutral specifications shared between `nqts/` and `studio/`.
+Language-neutral contracts shared by `nqts/` and `studio/`.
+Both codebases must implement to these documents.
 
-- Signal contract (strategy output schema, intent format)
-- Validation artifact contract (provenance pinning, approval gate)
-- Risk contract (limits, circuit-breaker states, prop-firm rules)
-- Portfolio contract (sizing, allocation limits)
-- Telemetry contract (metric names, event shapes)
+## Files
 
-These documents are the source of truth. Both codebases must implement to them.
+- `signal-contract.md` — strategy output shape / intent format
+- `artifact-contract.md` — Studio→NQTS promotion artifact (provenance + approval)
+- `risk-contract.md` — limits, breaker states, prop-firm rules
+- `portfolio-contract.md` — sizing + allocation
+- `telemetry-contract.md` — log event + metric names
