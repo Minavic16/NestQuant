@@ -1,0 +1,11 @@
+:root {
+  --bg: #0b0c0e;
+  --panel: #15171b;
+  --panel-border: #2a2d33;
+  --text: #e8e9eb;
+  --accent: #9aa0a6;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: ui-sans-serif, system-ui, sans-serif; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.card { background: var(--panel); border: 1px solid var(--panel-border); border-radius: 8px; padding: 16px; }
