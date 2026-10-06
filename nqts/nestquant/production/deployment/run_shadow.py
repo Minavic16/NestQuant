@@ -39,11 +39,15 @@ def main() -> None:
     p.add_argument("--pairs", nargs="*", default=None, help="Subset of pairs, e.g. EUR/USD GBP/USD")
     p.add_argument("--timeframe", default="4h", help="Timeframe (default 4h)")
     p.add_argument("--data-dir", default=None, help="Data root (default from config)")
-    p.add_argument("--log-dir", default="logs/shadow", help="Output directory for JSONL logs")
+    p.add_argument("--log-dir", default=None, help="Output directory for JSONL logs (default from runtime config $NQTS_LOG_DIR)")
     p.add_argument("--state-path", default=None, help="State file path (default <log_dir>/state.json)")
     p.add_argument("--limit-bars", type=int, default=None, help="Cap bars per pair (smoke test)")
     p.add_argument("--no-lifecycle", action="store_true", help="Disable shadow lifecycle exits")
     args = p.parse_args()
+
+    from nestquant.core.configuration.runtime import get_runtime
+    if args.log_dir is None:
+        args.log_dir = str(get_runtime().log_dir / "shadow")
 
     runner = ShadowRunner(
         pairs=args.pairs,

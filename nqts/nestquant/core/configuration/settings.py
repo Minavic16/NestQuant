@@ -167,7 +167,7 @@ class LiveEngineConfig:
     growth_target: float = 100.0
     max_lot: float = 0.20
     max_trades: int = 15
-    log_dir: str = "/root/logs"
+    log_dir: str = ""  # falls back to runtime config log_dir
 
 
 @dataclass(frozen=True)
@@ -184,7 +184,7 @@ class AlertConfig:
     """Alerting settings."""
 
     enabled: bool = True
-    webhook_url: str = "sAkuxb8g7YGGJ_l0EjfSbw"
+    webhook_url: str = ""  # set via ALERT_WEBHOOK_URL
     webhook_type: str = "ntfy"
 
 
@@ -440,7 +440,7 @@ CTRADER_USE_LIVE = os.getenv("CTRADER_USE_LIVE", "false").lower() == "true"
 CTRADER_AUTO_RECONNECT = True
 
 # Legacy multi-account
-ACCOUNTS_YAML = os.getenv("ACCOUNTS_YAML", "/root/accounts.yaml")
+ACCOUNTS_YAML = os.getenv("ACCOUNTS_YAML", str(Path(__file__).resolve().parents[3] / "accounts.yaml"))
 
 # Legacy circuit breaker
 CB_WINRATE_20 = 0.40
@@ -462,11 +462,11 @@ TRADE_LOG_COLUMNS = list(NestQuantConfig().trade_log_columns)
 LIVE_GROWTH_TARGET = float(os.getenv("LIVE_GROWTH_TARGET", "100.0"))
 LIVE_MAX_LOT = float(os.getenv("LIVE_MAX_LOT", "0.20"))
 LIVE_MAX_TRADES = int(os.getenv("LIVE_MAX_TRADES", "15"))
-LIVE_LOG_DIR = os.getenv("LIVE_LOG_DIR", "/root/logs")
+LIVE_LOG_DIR = os.getenv("LIVE_LOG_DIR", str(Path(__file__).resolve().parents[3] / "logs"))
 
 # Legacy alerting
 ALERT_ENABLED = os.getenv("ALERT_ENABLED", "true").lower() == "true"
-ALERT_WEBHOOK_URL = os.getenv("ALERT_WEBHOOK_URL", "sAkuxb8g7YGGJ_l0EjfSbw")
+ALERT_WEBHOOK_URL = os.getenv("ALERT_WEBHOOK_URL", "")
 ALERT_WEBHOOK_TYPE = os.getenv("ALERT_WEBHOOK_TYPE", "ntfy")
 
 # Legacy dashboard

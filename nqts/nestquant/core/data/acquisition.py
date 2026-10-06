@@ -147,7 +147,7 @@ def create_sample_from_existing(
 
     Args:
         pair: Pair name
-        pair_file: Path to pickle file (if None, uses /root/data/)
+        pair_file: Path to pickle file (if None, uses runtime data_dir)
         days: Number of days to sample
         output_dir: Directory to save output
 
@@ -157,7 +157,8 @@ def create_sample_from_existing(
     import pickle
 
     if pair_file is None:
-        pair_file = f"/root/data/{pair.replace('/', '_')}.pkl"
+        from nestquant.core.configuration.runtime import get_runtime
+        pair_file = str(get_runtime().data_dir / f"{pair.replace('/', '_')}.pkl")
 
     if not os.path.exists(pair_file):
         print(f"File not found: {pair_file}")

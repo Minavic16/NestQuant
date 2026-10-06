@@ -5,6 +5,7 @@ from the S3 base-cost simulation for financial planning.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -15,7 +16,7 @@ from scipy import stats as sp_stats
 from config import ALL_PAIRS
 from nestquant.core.tooling.indicators.pip import pip_size as get_pip_size
 
-DATA_DIR = Path("/root/data")
+DATA_DIR = Path(os.getenv("NQTS_DATA_DIR", Path(__file__).resolve().parents[3] / "data"))
 
 # Frozen from S0
 LOOKBACK = 5

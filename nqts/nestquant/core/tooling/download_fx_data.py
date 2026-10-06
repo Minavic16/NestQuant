@@ -38,7 +38,7 @@ PAIRS = [
     'NZD/CHF', 'CAD/CHF',
 ]
 
-DATA_DIR = Path('/root/data')
+DATA_DIR = Path(os.getenv("NQTS_DATA_DIR", Path(__file__).resolve().parents[3] / "data"))
 LOG_DIR = Path(__file__).resolve().parent.parent.parent / 'logs'
 FAILURE_LOG = LOG_DIR / 'download_failures.jsonl'
 PROGRESS_FILE = LOG_DIR / 'download_progress.json'
