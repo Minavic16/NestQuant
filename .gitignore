@@ -17,3 +17,7 @@ accounts.yaml
 **/accounts.yaml
 !**/accounts.example.yaml
 target/
+research/output/
+**/research/output/
+logs/
+data/

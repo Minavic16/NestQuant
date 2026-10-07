@@ -13,6 +13,13 @@ dependencies = [
   "uvicorn[standard]>=0.32.0",
   "pydantic>=2.9.0",
   "httpx>=0.27.0",
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "numba>=0.58",
+  "scipy>=1.11",
+  # Studio reads indicators/contracts from NQTS (one-way dependency; NQTS must
+  # never import Studio -- enforced by nqts/tests/safety/test_boundary.py).
+  "nestquant>=0.3.0",
 ]
 
 [project.optional-dependencies]
@@ -28,3 +35,14 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+# Migrated legacy research scripts and their tests are excluded from lint: they are
+# reproduced as-is for provenance, and bulk-reformatting them would only add risk.
+# New Studio code (api, core, db, engine, services) is linted.
+extend-exclude = [
+  "src/nestquant_studio/research",
+  "src/nestquant_studio/validation",
+  "tests/legacy",
+]

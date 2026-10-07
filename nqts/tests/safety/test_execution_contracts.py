@@ -1,5 +1,5 @@
 """
-Tests for nestquant.execution.contracts module.
+Tests for nestquant.production.execution.contracts module.
 """
 
 from dataclasses import asdict

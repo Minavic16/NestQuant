@@ -37,9 +37,7 @@ class TransitionError(Exception):
 def can_transition(frm: str, to: str, *, has_approval: bool = False) -> bool:
     if to not in TRANSITIONS.get(frm, set()):
         return False
-    if (frm, to) in NEEDS_APPROVAL and not has_approval:
-        return False
-    return True
+    return not ((frm, to) in NEEDS_APPROVAL and not has_approval)
 
 
 def assert_transition(frm: str, to: str, *, has_approval: bool = False) -> None:

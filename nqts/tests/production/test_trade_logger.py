@@ -1,5 +1,5 @@
 """
-Tests for nestquant.execution.trade_logger module.
+Tests for nestquant.production.execution.trade_logger module.
 """
 
 from __future__ import annotations

@@ -25,6 +25,11 @@ import numpy as np
 import pandas as pd
 import pytest
 
+import nestquant
+
+# Static source scans read the installed package, not a cwd-relative path.
+PRODUCTION = Path(nestquant.__file__).resolve().parent / "production"
+
 
 def _sample_df(n=800, seed=7, start="2020-01-01"):
     rng = np.random.default_rng(seed)
@@ -221,7 +226,7 @@ class TestShadowLogger:
     def test_no_broker_coupling_in_logger_source(self):
         import pathlib
 
-        src = pathlib.Path("execution/shadow/logger.py").read_text()
+        src = (PRODUCTION / "execution/shadow/logger.py").read_text()
         assert "MetaTrader5" not in src
         assert "import mt5" not in src.lower()
 
@@ -374,7 +379,7 @@ class TestShadowRunnerIntegration:
             "execution/shadow/runner.py",
             "execution/shadow/kill_switch.py",
         ]:
-            src = pathlib.Path(mod_path).read_text()
+            src = (PRODUCTION / mod_path).read_text()
             assert "MetaTrader5" not in src
             assert "import mt5" not in src.lower()
             assert "OrderSend" not in src

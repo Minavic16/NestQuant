@@ -12,6 +12,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
+from nestquant.core.configuration.runtime import get_runtime
+
 # Load .env file
 try:
     from dotenv import load_dotenv
@@ -250,26 +252,25 @@ class NestQuantConfig:
     )
 
     def __post_init__(self) -> None:
-        """Set computed paths after initialization."""
-        # Set data paths relative to this file's directory
-        root_dir = Path(__file__).parent.parent.parent
+        """Fill path defaults from the single RuntimeConfig (env-overridable)."""
+        rt = get_runtime()
         if not self.data.data_dir:
             object.__setattr__(self, "data", DataConfig(
-                data_dir=str(root_dir / "data"),
-                mt5_data_cache=str(root_dir / "data" / "mt5_matrix_pool.pkl"),
+                data_dir=str(rt.data_dir),
+                mt5_data_cache=str(rt.data_dir / "mt5_matrix_pool.pkl"),
                 mt5_bars_to_fetch=self.data.mt5_bars_to_fetch,
             ))
         if not self.dashboard.users_db:
             object.__setattr__(self, "dashboard", DashboardConfig(
                 port=self.dashboard.port,
                 host=self.dashboard.host,
-                users_db=str(root_dir / "users.json"),
+                users_db=str(rt.repo_root / "users.json"),
             ))
         if not self.news.csv_path:
             object.__setattr__(self, "news", NewsConfig(
                 buffer_minutes=self.news.buffer_minutes,
                 filter_levels=self.news.filter_levels,
-                csv_path=str(root_dir / "master_news_calendar.csv"),
+                csv_path=rt.news_csv_path or str(rt.repo_root / "master_news_calendar.csv"),
             ))
 
 
@@ -422,7 +423,7 @@ CORRELATION_WINDOW = 20
 CORRELATION_THRESHOLD = 0.70
 
 # Legacy data paths
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+DATA_DIR = str(get_runtime().data_dir)
 MT5_DATA_CACHE = os.path.join(DATA_DIR, "mt5_matrix_pool.pkl")
 MT5_BARS_TO_FETCH = 100000
 
@@ -440,7 +441,7 @@ CTRADER_USE_LIVE = os.getenv("CTRADER_USE_LIVE", "false").lower() == "true"
 CTRADER_AUTO_RECONNECT = True
 
 # Legacy multi-account
-ACCOUNTS_YAML = os.getenv("ACCOUNTS_YAML", str(Path(__file__).resolve().parents[3] / "accounts.yaml"))
+ACCOUNTS_YAML = str(get_runtime().accounts_yaml)
 
 # Legacy circuit breaker
 CB_WINRATE_20 = 0.40
@@ -462,7 +463,7 @@ TRADE_LOG_COLUMNS = list(NestQuantConfig().trade_log_columns)
 LIVE_GROWTH_TARGET = float(os.getenv("LIVE_GROWTH_TARGET", "100.0"))
 LIVE_MAX_LOT = float(os.getenv("LIVE_MAX_LOT", "0.20"))
 LIVE_MAX_TRADES = int(os.getenv("LIVE_MAX_TRADES", "15"))
-LIVE_LOG_DIR = os.getenv("LIVE_LOG_DIR", str(Path(__file__).resolve().parents[3] / "logs"))
+LIVE_LOG_DIR = os.getenv("LIVE_LOG_DIR") or str(get_runtime().log_dir)
 
 # Legacy alerting
 ALERT_ENABLED = os.getenv("ALERT_ENABLED", "true").lower() == "true"
@@ -471,8 +472,8 @@ ALERT_WEBHOOK_TYPE = os.getenv("ALERT_WEBHOOK_TYPE", "ntfy")
 
 # Legacy dashboard
 DASHBOARD_SECRET = os.getenv("DASHBOARD_SECRET", "")
-DASHBOARD_USERS_DB = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.json")
-NEWS_CSV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "master_news_calendar.csv")
+DASHBOARD_USERS_DB = str(get_runtime().repo_root / "users.json")
+NEWS_CSV_PATH = get_runtime().news_csv_path or str(get_runtime().repo_root / "master_news_calendar.csv")
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 DASHBOARD_PORT = int(os.getenv("DASHBOARD_PORT", "8080"))
 DASHBOARD_HOST = os.getenv("DASHBOARD_HOST", "0.0.0.0")

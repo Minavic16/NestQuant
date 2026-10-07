@@ -281,7 +281,7 @@ class ResearchService:
         ).fetchone()
         if not rows:
             raise KeyError(composite_id)
-        body = json.loads(rows["body"])
+        json.loads(rows["body"])  # stored body must be well-formed JSON before approval
         self.repo.create_approval(
             subject_type="strategy_composite",
             subject_id=composite_id,

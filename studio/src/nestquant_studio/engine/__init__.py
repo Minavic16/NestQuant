@@ -1,10 +1,10 @@
-from .eval_adapter import EvalRequest, EvalResult, EvalAdapter, ToyParamEvalAdapter
+from .eval_adapter import EvalAdapter, EvalRequest, EvalResult, ToyParamEvalAdapter
 from .ladder_runner import LadderRunner
 
 __all__ = [
+    "EvalAdapter",
     "EvalRequest",
     "EvalResult",
-    "EvalAdapter",
-    "ToyParamEvalAdapter",
     "LadderRunner",
+    "ToyParamEvalAdapter",
 ]

@@ -1,5 +1,5 @@
 """
-Tests for nestquant.execution.adapter module.
+Tests for nestquant.production.execution.adapter module.
 """
 
 from __future__ import annotations

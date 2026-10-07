@@ -142,3 +142,39 @@ def test_metadata() -> InstrumentMetadata:
         typical_spread_pips=1.0,
         contract_size=100_000,
     )
+
+
+# --- market-data gating (explicit allowlist, not a blanket skip) ----------------
+# These integration tests replay historical bars from NQTS_DATA_DIR. They skip with
+# a visible reason when no bars exist and run normally when they do.
+DATA_DEPENDENT = (
+    "tests/safety/test_shadow.py::TestShadowRunnerIntegration::test_small_replay_produces_logs_and_state",
+    "tests/safety/test_shadow.py::TestShadowRunnerIntegration::test_kill_switch_halts_runner",
+    "tests/safety/test_live_shadow.py::TestLiveShadowStartup::test_startup_processes_one_bar",
+    "tests/safety/test_live_shadow.py::TestLiveShadowMissingCandle::test_missing_candle_detected",
+    "tests/safety/test_live_shadow.py::TestLiveShadowRestart::test_restart_no_duplicate_processing",
+)
+
+
+def _has_bars() -> bool:
+    from nestquant.core.configuration.runtime import get_runtime
+    d = get_runtime().data_dir
+    return (d / "4h" / "EUR_USD.pkl").exists() or (d / "EUR_USD.pkl").exists()
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "requires_data: needs historical bars in NQTS_DATA_DIR")
+
+
+def pytest_collection_modifyitems(config, items):
+    if _has_bars():
+        return
+    from nestquant.core.configuration.runtime import get_runtime
+    skip = pytest.mark.skip(reason=f"no historical bars in {get_runtime().data_dir} (set NQTS_DATA_DIR)")
+    for item in items:
+        nid = item.nodeid
+        if nid.startswith("nqts/"):
+            nid = nid[len("nqts/"):]
+        if nid in DATA_DEPENDENT:
+            item.add_marker(skip)
+            item.add_marker(pytest.mark.requires_data)

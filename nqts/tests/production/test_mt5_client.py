@@ -1,5 +1,5 @@
 """
-Tests for nestquant.execution.mt5_client module.
+Tests for nestquant.production.execution.mt5_client module.
 """
 
 from __future__ import annotations
@@ -88,7 +88,7 @@ class TestMT5ClientConstruction:
 
 
 class TestHealthEndpoint:
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_health_success(self, mock_urlopen):
         resp = MagicMock()
         resp.status = 200
@@ -107,7 +107,7 @@ class TestHealthEndpoint:
         assert result.data["mt5_connected"] is True
         assert result.status_code == 200
 
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_health_failure(self, mock_urlopen):
         resp = MagicMock()
         resp.status = 200
@@ -132,7 +132,7 @@ class TestHealthEndpoint:
 
 
 class TestGetPositions:
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_get_positions_success(self, mock_urlopen):
         positions = [
             {"ticket": 12345, "symbol": "EURUSD", "volume": 0.1, "profit": 10.0},
@@ -154,7 +154,7 @@ class TestGetPositions:
         assert result.ok is True
         assert len(result.data["positions"]) == 2
 
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_get_positions_empty(self, mock_urlopen):
         resp = MagicMock()
         resp.status = 200
@@ -179,7 +179,7 @@ class TestGetPositions:
 
 
 class TestSendOrder:
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_send_order_market_buy(self, mock_urlopen):
         resp = MagicMock()
         resp.status = 200
@@ -217,7 +217,7 @@ class TestSendOrder:
         assert body["sl"] == 1.0950
         assert body["tp"] == 1.1150
 
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_send_order_sell(self, mock_urlopen):
         resp = MagicMock()
         resp.status = 200
@@ -265,7 +265,7 @@ class TestSendOrder:
         # send_order calls .upper() before lookup, so lowercase works at the API level
         # This is tested via test_send_order_market_buy which uses "BUY" directly
 
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_send_order_rejection(self, mock_urlopen):
         resp = MagicMock()
         resp.status = 200
@@ -287,7 +287,7 @@ class TestSendOrder:
         assert result.ok is False
         assert "Not enough money" in result.error
 
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_send_order_with_price(self, mock_urlopen):
         resp = MagicMock()
         resp.status = 200
@@ -322,7 +322,7 @@ class TestSendOrder:
 
 
 class TestClosePosition:
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_close_position_success(self, mock_urlopen):
         resp = MagicMock()
         resp.status = 200
@@ -357,7 +357,7 @@ class TestClosePosition:
 
 
 class TestErrorHandling:
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_http_500_retries(self, mock_urlopen):
         """Server errors should be retried."""
         error_body = json.dumps({"error": "Internal server error"}).encode()
@@ -386,7 +386,7 @@ class TestErrorHandling:
         assert result.ok is True
         assert mock_urlopen.call_count == 2
 
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_connection_error_returns_error(self, mock_urlopen):
         mock_urlopen.side_effect = URLError("Connection refused")
 
@@ -396,7 +396,7 @@ class TestErrorHandling:
         assert result.ok is False
         assert "Connection failed" in result.error
 
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_http_400_no_retry(self, mock_urlopen):
         """Client errors (4xx) should NOT be retried."""
         error_body = json.dumps({"error": "Bad request"}).encode()
@@ -416,7 +416,7 @@ class TestErrorHandling:
         assert result.status_code == 400
         assert mock_urlopen.call_count == 1
 
-    @patch("nestquant.execution.mt5_client.urlopen")
+    @patch("nestquant.production.execution.mt5_client.urlopen")
     def test_json_parse_error(self, mock_urlopen):
         resp = MagicMock()
         resp.status = 200

@@ -15,7 +15,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 
-from nestquant.research.experiments.s8_runner import main as runner_main, parse_args
+from nestquant.production.deployment.s8_runner import main as runner_main, parse_args
 
 
 def _make_mock_factory():

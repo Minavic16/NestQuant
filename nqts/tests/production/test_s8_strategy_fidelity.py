@@ -3,7 +3,7 @@ Tests for Strategy Fidelity — Research vs Live Configuration
 =============================================================
 Proves that the live BreakoutSignal uses exact research parameters.
 
-Run: PYTHONPATH=/root/that python -m pytest tests/test_s8_strategy_fidelity.py -v --noconftest
+Run: python -m pytest nqts/tests/production/test_s8_strategy_fidelity.py -v
 """
 
 from __future__ import annotations
@@ -16,6 +16,11 @@ from types import ModuleType
 from unittest.mock import MagicMock
 
 import pytest
+
+import nestquant
+
+# Directory holding the live strategy code (signals/, risk/, ...).
+NESTQUANT_ROOT = Path(nestquant.__file__).resolve().parent / "production"
 
 
 # Mock pandas and nestquant.signals.base to avoid import errors

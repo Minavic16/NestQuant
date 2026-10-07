@@ -13,6 +13,11 @@ from pathlib import Path
 
 import pytest
 
+import nestquant
+
+# Static source scans read the installed package, not a cwd-relative path.
+PRODUCTION = Path(nestquant.__file__).resolve().parent / "production"
+
 
 def _run_live(tmp_path: Path, **kwargs):
     from nestquant.production.execution.shadow.live_adapter import StubLiveAdapter
@@ -195,7 +200,7 @@ class TestLiveShadowSafetyGuard:
         # Live runner must not actually *call* order functions (mentions in docs/blocklist are ok)
         import pathlib, re
         for mod in ["execution/shadow/live_adapter.py", "execution/shadow/live_runner.py"]:
-            src = pathlib.Path(mod).read_text()
+            src = (PRODUCTION / mod).read_text()
             # Check for actual call, not docstring mention: OrderSend( with parenthesis
             assert not re.search(r"OrderSend\s*\(", src)
             assert not re.search(r"order_send\s*\(", src, re.IGNORECASE)
@@ -226,7 +231,7 @@ class TestWineFlaskReadOnlyAdapter:
         # Verify new adapter never touches order endpoints (even in docs)
         import pathlib, re
 
-        src = pathlib.Path("execution/shadow/live_adapter.py").read_text()
+        src = (PRODUCTION / "execution/shadow/live_adapter.py").read_text()
         # WineFlask adapter should only call read endpoints
         assert "WineFlaskReadOnlyAdapter" in src
         # Ensure WineFlask class does not call order endpoints (check only the class body, not docstring blocklist)
@@ -304,7 +309,7 @@ class TestWineFlaskReadOnlyAdapter:
         assert not hasattr(adapter, "order_send")
         # Ensure source doesn't contain order calls
         import pathlib
-        src = pathlib.Path("execution/shadow/live_adapter.py").read_text()
+        src = (PRODUCTION / "execution/shadow/live_adapter.py").read_text()
         # Extract WineFlask class source (approx)
         wine_section = src.split("class WineFlaskReadOnlyAdapter")[1].split("class MT5ReadOnlyAdapter")[0]
         assert "order" not in wine_section.lower() or "order" in wine_section.lower() and "OrderSend" not in wine_section

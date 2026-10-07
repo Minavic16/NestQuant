@@ -13,7 +13,7 @@ import pandas as pd
 from scipy import stats as sp_stats
 
 
-from config import ALL_PAIRS
+from nestquant.core.configuration.settings import ALL_PAIRS
 from nestquant.core.tooling.indicators.pip import pip_size as get_pip_size
 
 DATA_DIR = Path(os.getenv("NQTS_DATA_DIR", Path(__file__).resolve().parents[3] / "data"))

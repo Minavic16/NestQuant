@@ -59,27 +59,25 @@ class ToyParamEvalAdapter:
             score = sum(numeric_vals) / len(numeric_vals)
         metrics["score_like"] = round(score, 6)
 
-        for key, vmin in thresholds.items():
+        for key, bound in thresholds.items():
             if key.endswith("_min"):
                 p = key[: -len("_min")]
-                if p in params and isinstance(params[p], (int, float)):
-                    if float(params[p]) < float(vmin):
-                        return EvalResult(
-                            ok=True,
-                            passed=False,
-                            metrics=metrics,
-                            kill_reason="below_metric",
-                        )
+                below = (
+                    p in params
+                    and isinstance(params[p], (int, float))
+                    and float(params[p]) < float(bound)
+                )
+                if below:
+                    return EvalResult(ok=True, passed=False, metrics=metrics, kill_reason="below_metric")
             if key.endswith("_max"):
                 p = key[: -len("_max")]
-                if p in params and isinstance(params[p], (int, float)):
-                    if float(params[p]) > float(vmax := vmin):
-                        return EvalResult(
-                            ok=True,
-                            passed=False,
-                            metrics=metrics,
-                            kill_reason="below_metric",
-                        )
+                above = (
+                    p in params
+                    and isinstance(params[p], (int, float))
+                    and float(params[p]) > float(bound)
+                )
+                if above:
+                    return EvalResult(ok=True, passed=False, metrics=metrics, kill_reason="below_metric")
 
         # Default L1+: require score_like >= threshold if provided
         smin = thresholds.get("score_like_min")

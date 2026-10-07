@@ -12,8 +12,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - run: pip install -e ./nqts
-      - run: pytest nqts/tests/unit nqts/tests/smoke -q
+      - run: pip install -e "./nqts[dev]"
+      - run: pytest nqts/tests -q
         env: { NESTQUANT_SKIP_LIVE_CHECK: "1", NESTQUANT_SKIP_DASHBOARD_CHECK: "1" }
       - run: echo "build artifacts would be packaged here"
 

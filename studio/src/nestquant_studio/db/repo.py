@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from nestquant_studio.core.hashutil import sha256_json
@@ -11,7 +11,7 @@ from nestquant_studio.core.state_machine import assert_transition
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    return datetime.now(UTC).replace(microsecond=0).isoformat()
 
 
 def _j(obj: Any) -> str:

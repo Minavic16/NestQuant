@@ -5,12 +5,12 @@ NestQuant S8 Runner
 Entry point for the S8 live trading runtime.
 
 Usage:
-    python scripts/s8_runner.py --mode dry-run [--pairs EUR/USD] [--timeframe H4]
-    python scripts/s8_runner.py --mode experimental-live [--pairs EUR/USD] [--timeframe H4]
+    python -m nestquant.production.deployment.s8_runner --mode dry-run [--pairs EUR/USD] [--timeframe H4]
+    python -m nestquant.production.deployment.s8_runner --mode experimental-live [--pairs EUR/USD] [--timeframe H4]
 
 Environment:
     NESTQUANT_LOG_LEVEL: Logging level (default: INFO)
-    NESTQUANT_LOG_DIR: Log directory (default: /tmp/nestquant/logs)
+    NESTQUANT_LOG_DIR: Log directory (default: $NQTS_LOG_DIR, else <repo>/logs)
     NESTQUANT_EXPERIMENTAL_LIVE: Must be "true" for --mode experimental-live
 """
 
@@ -20,15 +20,13 @@ import os
 import sys
 from pathlib import Path
 
-# Ensure project root is on path
-if PROJECT_ROOT not in sys.path:
-
+from nestquant.core.configuration.runtime import get_runtime
 from nestquant.production.execution.s8_runtime import RuntimeConfig, RuntimeMode, S8Runtime
 
 
 def setup_logging(level: str = "INFO") -> None:
     """Configure structured logging."""
-    log_dir = os.environ.get("NESTQUANT_LOG_DIR", "/tmp/nestquant/logs")
+    log_dir = os.environ.get("NESTQUANT_LOG_DIR") or str(get_runtime().log_dir)
     os.makedirs(log_dir, exist_ok=True)
 
     logging.basicConfig(
