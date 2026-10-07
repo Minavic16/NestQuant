@@ -13,3 +13,7 @@ node_modules/
 data/*.db
 data/*.db-*
 .venv/
+accounts.yaml
+**/accounts.yaml
+!**/accounts.example.yaml
+target/

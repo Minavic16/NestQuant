@@ -1,15 +1,18 @@
+# Copy to accounts.yaml (git-ignored). Credentials are NEVER stored here:
+# password_env names an environment variable resolved at runtime.
 accounts:
   - id: demo-1
     broker: metatrader5
-    server: MetaQuotes-Demo
-    login: 111308298
+    server: YourBroker-Demo
+    login: 100000001
     leverage: 100
+    password_env: NQTS_DEMO1_PASSWORD
     risk: { max_dd_pct: 5, max_open_trades: 1 }
-    canary: false
   - id: canary-1
     broker: metatrader5
-    server: MetaQuotes-Demo
-    login: 999999999
+    server: YourBroker-Demo
+    login: 100000002
     leverage: 100
+    password_env: NQTS_CANARY1_PASSWORD
     risk: { max_dd_pct: 2, max_open_trades: 1 }
     canary: true

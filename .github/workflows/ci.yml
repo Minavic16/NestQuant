@@ -27,3 +27,22 @@ jobs:
         env:
           NESTQUANT_SKIP_LIVE_CHECK: "1"
           NESTQUANT_SKIP_DASHBOARD_CHECK: "1"
+
+  nqts-rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with: { components: "clippy, rustfmt" }
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            nqts/rust/target
+          key: cargo-${{ hashFiles('nqts/rust/**/Cargo.toml') }}
+      - run: cargo fmt --all -- --check
+        working-directory: nqts/rust
+      - run: cargo clippy --all-targets -- -D warnings
+        working-directory: nqts/rust
+      - run: cargo test --all
+        working-directory: nqts/rust
