@@ -2,29 +2,35 @@
 
 Canonical monorepo for the NestQuant ecosystem.
 
-- `nqts/` — **NestQuant Trading System**: runtime execution of validated strategies, risk/portfolio management, monitoring, notifications, MT5 connectivity.
-- `studio/` — **NestQuant Studio**: research OS for validation, experiments, and candidate strategy generation.
-- `contracts/` — language-neutral contracts shared by both.
-- `admin-ui/` — unified operator dashboard (NQTS ops + Studio admin).
+`nqts/`   — NestQuant Trading System: validated strategy execution, risk engine,
+            portfolio, monitoring, notifications, MT5 connector, shadow replay.
+`studio/` — NestQuant Studio: the research OS (hypothesis lifecycle, search space,
+            experiment evaluation, walk-forward validation of candidates).
+`contracts/` — language-neutral contracts + parity fixtures shared by both.
+`admin-ui/` — unified NQTS+Studio admin dashboard (Next.js, futuristic black/grey).
 
-## Principles
+## Boundaries (enforced by tests)
 
-1. Studio validates; NQTS executes. No experiments inside NQTS.
+1. Studio validates; NQTS executes. **NQTS must never import Studio/research.**
+   Enforced by `nqts/tests/safety/test_boundary.py`.
 2. NQTS runs only approved, provenance-pinned artifacts from Studio.
-3. Observable, modular, secure, and maintainable over clever.
-4. No hardcoded paths or machine-local assumptions.
+3. No experiments inside NQTS. Research lives in `studio/`.
 
-## Layout
+## Quickstart
 
-```
-nqts/production/   signals, strategy, execution, risk, portfolio, monitoring, notifications, dashboard
-nqts/core/         canonical governance, architecture, contracts, data
-nqts/scripts/      run-time entry points (shadow runner, replay audits)
-studio/src/ …      NestQuant Studio research OS (see studio/README.md)
-contracts/         shared specs
-admin-ui/          unified admin dashboard (planned)
+```bash
+pip install -e "./nqts[dev]" -e "./studio[dev]"
+export NESTQUANT_SKIP_LIVE_CHECK=1 NESTQUANT_SKIP_DASHBOARD_CHECK=1
+pytest nqts/tests -q        # 1073 passed
+pytest studio/tests -q      # 202 passed, 529 skipped (need real market data)
+cd nqts/rust && cargo test  # 19 passed, fmt+clippy clean
 ```
 
-## Status
+## Current state
 
-Migrated from `Minavic16/that` (stale) and `NestQuant-Prod`. See `docs/` for the architecture plan.
+- NQTS Python suite green; Rust risk engine / account manager / monitoring
+  parity-tested against Python (`contracts/fixtures/breakers.json`).
+- Studio EvalAdapter drives the **real** execution simulator + evaluator
+  (`SimulatedExecutionAdapter`), deterministic for CI.
+- CI: nqts (full pytest) + studio (ruff+pytest) + rust (fmt/clippy/test).
+- See `docs/DECISIONS.md` for what still needs a human decision / data / VPS.
